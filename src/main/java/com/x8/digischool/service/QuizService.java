@@ -2,11 +2,15 @@ package com.x8.digischool.service;
 
 import com.x8.digischool.domain.Quiz;
 import com.x8.digischool.domain.QuizOption;
+import com.x8.digischool.domain.Users;
+import com.x8.digischool.domain.WrongQuiz;
 import com.x8.digischool.dto.QuizDto;
 import com.x8.digischool.dto.QuizOptionDto;
 import com.x8.digischool.repository.QuizOptionRepository;
 import com.x8.digischool.repository.QuizRepository;
 import com.x8.digischool.dto.ApiResponseDto.ResponseDto;
+import com.x8.digischool.repository.UserRepository;
+import com.x8.digischool.repository.WrongQuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,8 @@ import java.util.stream.Collectors;
 public class QuizService {
     private final QuizRepository quizRepository;
     private final QuizOptionRepository quizOptionRepository;
+    private final WrongQuizRepository wrongQuizRepository;
+    private final UserRepository userRepository;
 
     /**
      * 퀴즈 전체 목록 조회
@@ -62,6 +68,24 @@ public class QuizService {
                 .map(Long::parseLong)  // 각 요소를 Long으로 변환
                 .collect(Collectors.toList());  // List<Long>으로 수집
 
-        return new ResponseDto("success", quizIdsList);
+        // user_id를 이용해 Users 객체 찾기
+        Users user = userRepository.findById(wrongQuizDto.getUser_id())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Quiz ids 개수대로 데이터 저장
+        for (Long quizId : quizIdsList) {
+            // quiz_id를 이용해 Quiz 객체 찾기
+            Quiz quiz = quizRepository.findById(quizId)
+                    .orElseThrow(() -> new IllegalArgumentException("Quiz not found"));
+
+            // WrongQuiz 객체 생성
+            WrongQuiz wrongQuiz = new WrongQuiz();
+            wrongQuiz.setUser(user);  // Users 객체 설정
+            wrongQuiz.setQuiz(quiz);  // Quiz 객체 설정
+
+            // wrongQuizRepository를 사용하여 DB에 저장
+            wrongQuizRepository.save(wrongQuiz);
+        }
+        return new ResponseDto("success", null);
     }
 }
