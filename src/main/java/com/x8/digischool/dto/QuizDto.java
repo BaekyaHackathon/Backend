@@ -15,4 +15,13 @@ public class QuizDto {
         private Long lesson_id;
         private List<QuizOptionDto.QuizOptionInfoDto> options;
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    @Builder
+    public static class WrongQuizDto {
+        private Long user_id;
+        private String quiz_ids;
+    }
 }

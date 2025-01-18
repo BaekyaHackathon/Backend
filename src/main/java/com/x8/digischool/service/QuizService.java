@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,4 +49,19 @@ public class QuizService {
         return new ResponseDto("success", quizDto);
     }
 
+    /**
+     * 틀린 퀴즈 저장
+     * @return status
+     */
+    public ResponseDto saveWrongQuizzes(QuizDto.WrongQuizDto wrongQuizDto){
+        // quiz_ids는 String 타입으로 ',' 구분자로 전달됨
+        String quizIdsString = wrongQuizDto.getQuiz_ids();
+
+        // ','로 구분된 문자열을 List<Long>으로 변환
+        List<Long> quizIdsList = Arrays.stream(quizIdsString.split(","))
+                .map(Long::parseLong)  // 각 요소를 Long으로 변환
+                .collect(Collectors.toList());  // List<Long>으로 수집
+
+        return new ResponseDto("success", quizIdsList);
+    }
 }
