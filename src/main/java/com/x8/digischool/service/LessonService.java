@@ -21,15 +21,17 @@ public class LessonService {
     private final LessonRepository lessonRepository;
     private final ProgressRepository progressRepository;
 
-    public List<LessonDto> getLessonsByUser(Long userId) {
-        List<Progress> progressList = progressRepository.findByUserId(userId);
+    public List<LessonDto> getAllLessons() {
+        // LessonRepository를 사용하여 모든 Lesson 조회
+        List<Lesson> lessons = lessonRepository.findAll();
 
-        return progressList.stream()
-                .map(progress -> new LessonDto(
-                        progress.getLesson().getId(),
-                        progress.getLesson().getTitle(),
-                        progress.getLesson().getThumbnailUrl(),
-                        progress.getProgressRate()
+        // Lesson 데이터를 LessonDto로 변환
+        return lessons.stream()
+                .map(lesson -> new LessonDto(
+                        lesson.getId(),
+                        lesson.getTitle(),
+                        lesson.getThumbnailUrl(),
+                        null // ProgressRate는 모든 Lesson 조회에선 불필요하므로 null로 처리
                 ))
                 .collect(Collectors.toList());
     }

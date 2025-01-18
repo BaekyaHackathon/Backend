@@ -30,8 +30,8 @@ public class LessonController {
 
     @GetMapping("/api/lessons")
     public ApiResponse<List<LessonDto>> getLessons() {
-        Long userId = 1L;
-        List<LessonDto> lessons = lessonService.getLessonsByUser(userId);
+        // 모든 Lesson 데이터를 조회
+        List<LessonDto> lessons = lessonService.getAllLessons();
         return new ApiResponse<>("success", lessons);
     }
 
