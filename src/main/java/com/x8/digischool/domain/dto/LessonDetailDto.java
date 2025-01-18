@@ -1,13 +1,14 @@
-package com.x8.digischool.domain;
+package com.x8.digischool.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LessonDto {
+public class LessonDetailDto {
     private Long id;
     private String title;
-    private String thumbnailUrl;
+    private String description;
+    private String videoUrl;
     private Integer progressRate;
 }
